@@ -1,85 +1,62 @@
-# Awesome Babushka
+# Awesome Babushka Commons
 
-Awesome Babushka is a next-generation, full-stack social platform engineered to foster authentic conversations and meaningful connections. Leveraging a modern technology stack—Bun, Vite, React, TailwindCSS on the frontend, and FastAPI with MongoDB on the backend—it delivers a seamless, adaptive, and secure user experience.
+A shared Python package containing common utilities, models, and database connections for the Awesome Babushka ecosystem. This package provides reusable components that can be shared across multiple services in the Awesome Babushka platform.
 
 ## Features
 
-- 🧑‍💻 **Modern UI**: Responsive, accessible, and visually appealing interface built with React, TailwindCSS, and Neumorphism-inspired components.
-- 🔒 **Robust Authentication**: Secure registration, login, JWT-based session management, and email verification.
-- 🗨️ **Interactive Social Feed**: Create posts, like, comment, and engage with the community in real time.
-- 🏠 **Personalized Home**: Dynamic layouts, animated UI elements, and user-focused content areas.
-- ⚡ **High Performance**: Fast development and deployment powered by Bun, Vite, FastAPI, and MongoDB.
-- 📧 **Integrated Email**: Configurable email verification and notifications for enhanced security and engagement.
+- � **Common Models**: Shared data models and utilities like SingletonMeta
+- �️ **Database Connections**: MongoDB connection utilities with singleton pattern
+- � **Reusable Components**: Common functionality that can be shared across services
+- 📦 **Easy Installation**: Installable as a pip package directly from GitHub
 
-## Getting Started
+## Installation
 
-### Prerequisites
-
-- [Bun](https://bun.sh/) (>=1.0.0)
-- Node.js (>=18) *(if not using Bun for all tooling)*
-- Python (>=3.10)
-- MongoDB (local or remote)
-- *Optional*: Docker for containerized development
-
-### Installation
-
-#### 1. Clone the repository
+You can install this package directly from GitHub:
 
 ```bash
-git clone https://github.com/your-org/awesome-babushka.git
-cd awesome-babushka/ui-dev
+pip install git+https://github.com/himansu9805/awesome-babushka-commons.git@main
 ```
 
-#### 2. Install frontend dependencies
+Or add it to your `requirements.txt`:
 
-```bash
-cd ui
-bun install
+```txt
+git+https://github.com/himansu9805/awesome-babushka-commons.git@main
 ```
-
-#### 3. Install backend dependencies
-
-```bash
-cd ../services/auth-service
-pip install -r requirements.txt
-```
-
-#### 4. Configure environment variables
-
-Copy `.env.example` to `.env` in `services/auth-service` and update as needed.
-
-#### 5. Start the backend
-
-```bash
-cd services/auth-service/src
-uvicorn auth_service.main:api --reload
-```
-
-#### 6. Start the frontend
-
-```bash
-cd ui
-bun run dev
-```
-
-Visit [http://localhost:5173](http://localhost:5173) to access the application.
 
 ## Usage
 
-- Register a new account or sign in.
-- Explore the social feed, create posts, and interact with the community.
-- Experience a dynamic, animated, and user-friendly platform.
+### MongoDB Connection
 
-## Development
+```python
+from commons import MongoConnect
 
-- **Linting:**  
-  - Frontend: `bun run lint`
-  - Backend: `pre-commit run --all-files`
-- **Formatting:**  
-  - Frontend: ESLint and Prettier
-  - Backend: Black, isort, and flake8
-- **Testing:**  
-  - *(Add your test instructions here if available)*
+# Create a MongoDB connection (singleton)
+mongo = MongoConnect("mongodb://localhost:27017", "my_database")
+
+# Get a collection
+users_collection = mongo.get_collection("users")
+
+# Use the collection
+users_collection.insert_one({"name": "John", "email": "john@example.com"})
+
+# Close connection when done
+mongo.close()
+```
+
+### Singleton Pattern
+
+```python
+from commons import SingletonMeta
+
+class MyService(metaclass=SingletonMeta):
+    def __init__(self):
+        self.initialized = True
+
+# Both instances will be the same object
+service1 = MyService()
+service2 = MyService()
+assert service1 is service2  # True
+```
 
 ## Contributing
 
@@ -92,12 +69,11 @@ We welcome contributions from the community! Please open issues or submit pull r
 
 ## License
 
-[MIT](LICENSE) © 2024 Awesome Babushka Contributors
+[MIT](LICENSE) © 2025 Awesome Babushka Contributors
 
 ## Authors & Acknowledgments
 
 - [@himansu9805](https://github.com/himansu9805)
-- [@algoberzerker](https://github.com/algoberzerker)
 - Special thanks to all contributors and the open-source community.
 
 ## Project Status

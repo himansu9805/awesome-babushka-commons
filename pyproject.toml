@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "awesome-babushka-commons"
+version = "0.1.0"
+description = "Common utilities and database connections for awesome-babushka projects"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "dnspython==2.7.0",
+    "pymongo==4.13.2",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/himansu9805/awesome-babushka-commons"
+"Bug Tracker" = "https://github.com/himansu9805/awesome-babushka-commons/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
