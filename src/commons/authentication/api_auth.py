@@ -1,6 +1,8 @@
 """API authentication module."""
 
 import requests
+from fastapi import Depends, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 
 class ApiAuth:
@@ -16,7 +18,11 @@ class ApiAuth:
         self.auth_url = auth_url
         self.disable_auth = disable_auth
 
-    def authenticate(self, token: str) -> bool:
+    def authenticate(
+        self,
+        request: Request,
+        credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    ) -> bool:
         """Authenticate the API request using the provided token.
 
         Args:
@@ -27,7 +33,7 @@ class ApiAuth:
         """
         if self.disable_auth:
             return True
-
+        token = credentials.credentials
         headers = {"Authorization": f"Bearer {token}"}
         response = requests.get(
             self.auth_url,
