@@ -22,17 +22,23 @@ class ApiAuth:
         self,
         request: Request,
         credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-    ) -> bool:
+    ) -> dict:
         """Authenticate the API request using the provided token.
 
         Args:
             token: The authentication token.
 
         Returns:
-            bool: True if authenticated, False otherwise.
+            dict: The user payload returned by the auth service when the token
+                is valid.
         """
         if self.disable_auth:
-            return True
+            return {
+                "username": "test_user",
+                "email": "test_user@example.com",
+                "verified": True,
+                "active": True,
+            }
         token = credentials.credentials
         headers = {"Authorization": f"Bearer {token}"}
         try:
@@ -51,4 +57,4 @@ class ApiAuth:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=f"Authentication failed: {str(e)}",
             ) from e
-        return True
+        return response.json().get("user")
