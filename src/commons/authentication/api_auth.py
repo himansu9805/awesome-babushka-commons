@@ -4,6 +4,8 @@ import requests
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from commons.authentication.models import CurrentUser
+
 
 class ApiAuth:
     """A class to handle API authentication."""
@@ -20,15 +22,17 @@ class ApiAuth:
         self,
         request: Request,
         credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-    ) -> dict:
+    ) -> CurrentUser:
         """Authenticate the API request using the provided token.
 
         Args:
             token: The authentication token.
 
         Returns:
-            dict: The user payload returned by the auth service when the token
-                is valid.
+            CurrentUser: The authenticated user information.
+
+        Raises:
+            HTTPException: If authentication fails or the token is invalid.
         """
         token = credentials.credentials
         headers = {"Authorization": f"Bearer {token}"}
@@ -48,4 +52,4 @@ class ApiAuth:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=f"Authentication failed: {str(e)}",
             ) from e
-        return response.json().get("user")
+        return CurrentUser(**response.json().get("user"))
