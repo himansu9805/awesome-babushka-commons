@@ -16,7 +16,7 @@ Requires-Dist: charset-normalizer==3.4.2
 Requires-Dist: dnspython==2.7.0
 Requires-Dist: fastapi==0.116.1
 Requires-Dist: idna==3.10
-Requires-Dist: pydantic==2.11.7
+Requires-Dist: pydantic[email]==2.11.7
 Requires-Dist: pydantic-core==2.33.2
 Requires-Dist: pymongo==4.13.2
 Requires-Dist: requests==2.32.4

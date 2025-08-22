@@ -5,7 +5,7 @@ charset-normalizer==3.4.2
 dnspython==2.7.0
 fastapi==0.116.1
 idna==3.10
-pydantic==2.11.7
+pydantic[email]==2.11.7
 pydantic-core==2.33.2
 pymongo==4.13.2
 requests==2.32.4

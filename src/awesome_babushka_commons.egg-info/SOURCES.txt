@@ -9,5 +9,6 @@ src/commons/__init__.py
 src/commons/models.py
 src/commons/authentication/__init__.py
 src/commons/authentication/api_auth.py
+src/commons/authentication/models.py
 src/commons/database/__init__.py
 src/commons/database/mongo.py
