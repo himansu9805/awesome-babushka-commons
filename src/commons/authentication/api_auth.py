@@ -1,5 +1,7 @@
 """API authentication module."""
 
+from typing import Optional
+
 import requests
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -21,7 +23,9 @@ class ApiAuth:
     def authenticate(
         self,
         request: Request,
-        credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+        credentials: Optional[HTTPAuthorizationCredentials] = Depends(
+            HTTPBearer()
+        ),
     ) -> dict:
         """Authenticate the API request using the provided token.
 
@@ -39,6 +43,11 @@ class ApiAuth:
                 "verified": True,
                 "active": True,
             }
+        if not credentials:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Missing authorization credentials",
+            )
         token = credentials.credentials
         headers = {"Authorization": f"Bearer {token}"}
         try:
