@@ -4,5 +4,5 @@ from .authentication import ApiAuth
 from .database.mongo import MongoConnect
 from .models import SingletonMeta
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = ["SingletonMeta", "MongoConnect", "ApiAuth"]
