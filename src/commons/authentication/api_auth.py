@@ -1,22 +1,40 @@
 """API authentication module."""
 
+import os
 import requests
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from commons.authentication.models import CurrentUser
 
+from jose import jwt
+
 
 class ApiAuth:
     """A class to handle API authentication."""
 
-    def __init__(self, auth_url: str):
+    def __init__(
+        self,
+        auth_url: str,
+        public_key: str,
+        algorithm: str,
+        issuer: str,
+        audience: str,
+    ):
         """Initializes the ApiAuth with the provided authentication URL.
 
         Args:
             auth_url: The authentication URL.
+            public_key: Public key for decoding the token.
+            algorithm: Algorithm used to create the token.
+            issuer: Name of token issuer.
+            audience: Name of audience for which token was issued.
         """
         self.auth_url = auth_url
+        self.public_key = public_key
+        self.algorithm = algorithm
+        self.issuer = issuer
+        self.audience = audience
 
     def authenticate(
         self,
@@ -35,21 +53,21 @@ class ApiAuth:
             HTTPException: If authentication fails or the token is invalid.
         """
         token = credentials.credentials
-        headers = {"Authorization": f"Bearer {token}"}
-        try:
-            response = requests.get(
-                self.auth_url,
-                headers=headers,
-                timeout=30,
+
+        payload = jwt.decode(
+            token,
+            self.public_key,
+            algorithms=[self.algorithm],
+            audience=self.audience,
+            issuer=self.issuer,
+        )
+
+        if payload.get("token_type") != "bearer":
+            raise ValueError(
+                f"Invalid token type. Expected bearer, "
+                f"got {payload.get('token_type')}"
             )
-            if response.status_code != 200:
-                raise HTTPException(
-                    status_code=response.status_code,
-                    detail=f"Authentication failed: {response.text}",
-                )
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Authentication failed: {str(e)}",
-            ) from e
-        return CurrentUser(**response.json().get("user"))
+
+        current_user = CurrentUser(**payload)
+
+        return current_user
