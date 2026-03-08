@@ -14,11 +14,17 @@ logger = logging.getLogger(__name__)
 class RabbitMQClient(metaclass=SingletonMeta):
     """RabbitMQ client for managing connections and topology."""
 
-    def __init__(self, reconnect_interval: int = 5, prefetch_count: int = 10):
+    def __init__(
+        self,
+        connection_url: str,
+        reconnect_interval: int = 5,
+        prefetch_count: int = 10,
+    ):
         """
         Initialize RabbitMQ client.
 
         Args:
+            connection_url: RabbitMQ connection URL.
             reconnect_interval: Seconds to wait before reconnecting.
             prefetch_count: Max unacknowledged messages per consumer.
         """
@@ -26,17 +32,15 @@ class RabbitMQClient(metaclass=SingletonMeta):
         self._channel: Optional[aio_pika.Channel] = None
         self._reconnect_interval = reconnect_interval
         self._prefetch_count = prefetch_count
+        self._connection_url = connection_url
 
-    async def connect(self, rabbitmq_url: str) -> None:
+    async def connect(self) -> None:
         """
         Opens a robust connection and a single shared channel.
         RobustConnection automatically reconnects on dropped connections.
-
-        Args:
-            rabbitmq_url: RabbitMQ connection URL.
         """
         self._connection = await aio_pika.connect_robust(
-            rabbitmq_url, reconnect_interval=self._reconnect_interval
+            self._connection_url, reconnect_interval=self._reconnect_interval
         )  # type: ignore
         self._channel = await self._connection.channel()  # type: ignore
 
